@@ -63,7 +63,7 @@ function load_mailbox(mailbox) {
     });
 }
 
-function send_email() {
+async function send_email() {
   // store the required attributes of the email
 
   const recipients = document.querySelector("#compose-recipients").value;
@@ -71,7 +71,7 @@ function send_email() {
   const body = document.querySelector("#compose-body").value;
 
   // send email
-  fetch("/emails", {
+  await fetch("/emails", {
     method: "POST",
     body: JSON.stringify({
       recipients: recipients,
@@ -130,8 +130,8 @@ function show_email(email_id) {
     });
 }
 
-function archive_email(email_id) {
-  fetch(`/emails/${email_id}`, {
+async function archive_email(email_id) {
+  await fetch(`/emails/${email_id}`, {
     method: "PUT",
     body: JSON.stringify({
       archived: true,
@@ -141,8 +141,8 @@ function archive_email(email_id) {
   document.querySelector("#inbox").click();
 }
 
-function unArchive_email(email_id) {
-  fetch(`/emails/${email_id}`, {
+async function unArchive_email(email_id) {
+  await fetch(`/emails/${email_id}`, {
     method: "PUT",
     body: JSON.stringify({
       archived: false,
