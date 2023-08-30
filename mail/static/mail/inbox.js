@@ -12,7 +12,10 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelector("#compose").addEventListener("click", compose_email);
 
   // configure the compose form
-  document.querySelector("#compose-form").onsubmit = send_email;
+  document.querySelector("#compose-form").onsubmit = function () {
+    send_email();
+    return false;
+  };
 
   // By default, load the inbox
   load_mailbox("inbox");
@@ -77,12 +80,9 @@ function send_email() {
     }),
   })
     .then((response) => response.json())
-    .then((result) => {
-      console.log(result);
-    });
+    .then((result) => console.log(result));
 
-  // load the sent mailbox
-  load_mailbox("sent");
+  document.querySelector("#sent").click();
 }
 
 function show_email(email_id) {
@@ -91,6 +91,7 @@ function show_email(email_id) {
   fetch(`/emails/${email_id}`)
     .then((response) => response.json())
     .then((email) => {
+      document.querySelector("#email-viewOptions").innerHTML = "";
       document.querySelector("#email-viewTopLeft").innerHTML = `
       <p>From: ${email.sender}</p>
       <small>To: ${email.recipients}</small>`;
@@ -104,5 +105,49 @@ function show_email(email_id) {
       document.querySelector("#compose-view").style.display = "none";
       document.querySelector("#emails-view").style.display = "none";
       document.querySelector("#email-view").style.display = "block";
+
+      if (
+        email.recipients.includes(
+          JSON.parse(document.querySelector("#user_email").textContent)
+        )
+      ) {
+        if (email.archived === false) {
+          const archiveButton = document.createElement("button");
+          archiveButton.textContent = "Archive";
+          archiveButton.addEventListener("click", () =>
+            archive_email(email.id)
+          );
+          document.querySelector("#email-viewOptions").append(archiveButton);
+        } else {
+          const unArchiveButton = document.createElement("button");
+          unArchiveButton.textContent = "Unarchive";
+          unArchiveButton.addEventListener("click", () =>
+            unArchive_email(email.id)
+          );
+          document.querySelector("#email-viewOptions").append(unArchiveButton);
+        }
+      }
     });
+}
+
+function archive_email(email_id) {
+  fetch(`/emails/${email_id}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      archived: true,
+    }),
+  });
+
+  document.querySelector("#inbox").click();
+}
+
+function unArchive_email(email_id) {
+  fetch(`/emails/${email_id}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      archived: false,
+    }),
+  });
+
+  document.querySelector("#inbox").click();
 }
