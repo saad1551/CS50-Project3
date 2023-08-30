@@ -33,6 +33,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector("#emails-view").style.display = "block";
   document.querySelector("#compose-view").style.display = "none";
+  document.querySelector("#email-view").style.display = "none";
 
   // Show the mailbox name
   emails_container = document.querySelector("#emails-view");
@@ -46,12 +47,14 @@ function load_mailbox(mailbox) {
       emails.forEach((email) => {
         const emailDiv = document.createElement("div");
         emailDiv.className = "email";
+        emailDiv.dataset.id = `${email.id}`;
         emailDiv.innerHTML = `<p>${email.sender}</p>
         <p>${email.subject}</p>
         <p>${email.timestamp}</p>`;
         email.read === true
           ? (emailDiv.style.backgroundColor = "gray")
           : (emailDiv.style.backgroundColor = "white");
+        emailDiv.addEventListener("click", () => show_email(email.id));
         emails_container.append(emailDiv);
       });
     });
@@ -80,6 +83,26 @@ function send_email() {
 
   // load the sent mailbox
   load_mailbox("sent");
+}
 
-  return false;
+function show_email(email_id) {
+  email_container = document.querySelector("#email-view");
+  console.log("fetching email");
+  fetch(`/emails/${email_id}`)
+    .then((response) => response.json())
+    .then((email) => {
+      document.querySelector("#email-viewTopLeft").innerHTML = `
+      <p>From: ${email.sender}</p>
+      <small>To: ${email.recipients}</small>`;
+      document.querySelector("#email-viewTopRight").innerHTML = `
+      <small>${email.timestamp}</small>`;
+      document.querySelector("#email-viewSubject").innerHTML = `
+      <h5>${email.subject}</h5>`;
+      document.querySelector("#email-viewBody").innerHTML = `
+      <h6>${email.body}</h6>`;
+
+      document.querySelector("#compose-view").style.display = "none";
+      document.querySelector("#emails-view").style.display = "none";
+      document.querySelector("#email-view").style.display = "block";
+    });
 }

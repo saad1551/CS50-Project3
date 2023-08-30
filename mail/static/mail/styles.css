@@ -10,3 +10,22 @@ textarea {
     border: 1px solid lightgray;
     cursor: pointer;
 }
+
+#email-view {
+    width: 70vw;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#email-viewTop {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#email-viewBody {
+    margin-left: 40px;
+}
