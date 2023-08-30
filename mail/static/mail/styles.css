@@ -17,6 +17,7 @@ textarea {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: center;
 }
 
 #email-viewTop {
@@ -28,4 +29,11 @@ textarea {
 
 #email-viewBody {
     margin-left: 40px;
+}
+
+#email-viewOptions {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 30vh;
 }

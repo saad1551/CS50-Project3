@@ -179,7 +179,7 @@ function reply_to_email(subject, sender, timestamp, emailBody) {
     ? subject
     : `Re: ${subject}`;
   const composeBody = document.querySelector("#compose-body");
-  composeBody.value = `\n\n\nOn ${timestamp}, ${sender} wrote:\n ${emailBody}`;
+  composeBody.value = `\n\n\n>On ${timestamp}, ${sender} wrote:\n ${emailBody}`;
   composeBody.setSelectionRange(start, start);
   composeBody.focus();
 }
